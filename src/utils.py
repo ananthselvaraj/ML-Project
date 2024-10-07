@@ -8,6 +8,8 @@ from sklearn.metrics import r2_score
 
 from src.exception import CustomException
 
+from sklearn.model_selection import GridSearchCV
+
 def save_object(file_path, obj):
     try:
         dir_path = os.path.dirname(file_path)
@@ -20,14 +22,21 @@ def save_object(file_path, obj):
     except Exception as e:
         raise CustomException(e, sys)
     
-def evaluate_models(xtrain,ytrain,xtest,ytest,models):
+def evaluate_models(xtrain,ytrain,xtest,ytest,models,param):
     try:
         report = {}
 
         for i in range(len(list(models))):
             model = list(models.values())[i]
+            para=param[list(models.keys())[i]]
 
+            gs=GridSearchCV(model,para,cv=3)
+            gs.fit(xtrain,ytrain)
+
+            model.set_params(**gs.best_params_)
             model.fit(xtrain,ytrain)
+
+            #model.fit(xtrain,ytrain)
 
             y_train_pred = model.predict(xtrain)
 
