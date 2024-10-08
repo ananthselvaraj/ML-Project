@@ -7,3 +7,4 @@ catboost
 xgboost
 numpy
 dill
+Flask
